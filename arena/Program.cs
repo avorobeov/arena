@@ -83,6 +83,8 @@ namespace arena
         }
 
         public abstract int GetAttack();
+
+        protected abstract void UseUniqueAbility();
     }
 
     class Mage : Hero
@@ -102,15 +104,15 @@ namespace arena
 
             if (_random.Next(0, maxValue) < dropPercentage)
             {
-                Pray();
+                UseUniqueAbility();
             }
 
             Console.WriteLine($"Нанесенный урон {Damage}");
 
             return Damage;
         }
-    
-        private void Pray()
+
+        protected override void UseUniqueAbility()
         {
             Health += 30;
         }
@@ -133,7 +135,7 @@ namespace arena
 
             if (_random.Next(0, maxValue) < dropPercentage)
             {
-                Confession();
+                UseUniqueAbility();
             }
 
             Console.WriteLine($"{Name}-Нанесенный урон {Damage}");
@@ -141,7 +143,7 @@ namespace arena
             return Damage;
         }
 
-        private void Confession()
+        protected override void UseUniqueAbility()
         {
             Health += 10;
 
@@ -182,15 +184,15 @@ namespace arena
 
             if (_random.Next(0, maxValue) < dropPercentage)
             {
-                Anger();
+                UseUniqueAbility();
             }
 
             Console.WriteLine($"{Name}-Нанесенный урон {Damage}");
 
             return Damage;
         }
-      
-        private void Anger()
+
+        protected override void UseUniqueAbility()
         {
             int attackIncrease = 2;
 
@@ -216,7 +218,7 @@ namespace arena
 
             if (_random.Next(0, maxValue) < dropPercentage)
             {
-                Decay();
+                UseUniqueAbility();
             }
 
             Console.WriteLine($"{Name}-Нанесенный урон {Damage}");
@@ -224,7 +226,7 @@ namespace arena
             return Damage;
         }
 
-        private void Decay()
+        protected override void UseUniqueAbility()
         {
             int increaseLife = 2;
 
@@ -249,7 +251,7 @@ namespace arena
 
             if (_random.Next(0, maxValue) < dropPercentage)
             {
-                Shout();
+                UseUniqueAbility();
             }
 
             Console.WriteLine($"{Name}-Нанесенный урон {Damage}");
@@ -257,7 +259,7 @@ namespace arena
             return Damage;
         }
 
-        private void Shout()
+        protected override void UseUniqueAbility()
         {
             Armor += 12;
             Damage += 7;
@@ -283,11 +285,11 @@ namespace arena
 
             ShowHeroes();
 
-            _firstHero = GetHeroIndex("Ведите номер  первого героя ");
+            _firstHero = GetHero("Ведите номер  первого героя ");
 
             ShowHeroes();
 
-            _secondHero = GetHeroIndex("Ведите номер  первого героя ");
+            _secondHero = GetHero("Ведите номер  первого героя ");
 
             _isFightersReady = true;
         }
@@ -334,7 +336,7 @@ namespace arena
             }
         }
 
-        private Hero GetHeroIndex(string text)
+        private Hero GetHero(string text)
         {
             Hero hero = null;
 
