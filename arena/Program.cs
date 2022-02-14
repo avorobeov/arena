@@ -51,11 +51,8 @@ namespace arena
         protected Random _random = new Random();
 
         public string Name { get; protected set; }
-
         public int Health { get; protected set; }
-
         public int Armor { get; protected set; }
-
         public int Damage { get; protected set; }
 
         public Hero(string name, int health, int armor, int damage)
@@ -68,9 +65,12 @@ namespace arena
 
         public virtual void TakeDamage(int damage)
         {
-            double amountDamage = damage - damage * Armor / 100;
+            int minimumAmountArmor = 1;
+            int getPercentages = 100;
 
-            if (Armor >= 1)
+            double amountDamage = damage - damage * Armor / getPercentages;
+
+            if (Armor >= minimumAmountArmor)
             {
                 Health -= (int)amountDamage;
 
