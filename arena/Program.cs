@@ -24,7 +24,7 @@ namespace arena
                 switch (userInput)
                 {
                     case "1":
-                        arena.PlayerChoice();
+                        arena.ChoiceHeroes();
                         break;
 
                     case "2":
@@ -48,7 +48,7 @@ namespace arena
 
     abstract class Hero
     {
-        protected Random random = new Random();
+        protected Random _random = new Random();
 
         public string Name { get; protected set; }
 
@@ -82,7 +82,7 @@ namespace arena
             }
         }
 
-        public abstract int Attack();
+        public abstract int GetAttack();
     }
 
     class Mage : Hero
@@ -95,17 +95,12 @@ namespace arena
             Damage = damage;
         }
 
-        private void Pray()
-        {
-            Health += 30;
-        }
-
-        public override int Attack()
+        public override int GetAttack()
         {
             int maxValue = 100;
             int dropPercentage = 15;
 
-            if (random.Next(0, maxValue) < dropPercentage)
+            if (_random.Next(0, maxValue) < dropPercentage)
             {
                 Pray();
             }
@@ -113,6 +108,11 @@ namespace arena
             Console.WriteLine($"Нанесенный урон {Damage}");
 
             return Damage;
+        }
+    
+        private void Pray()
+        {
+            Health += 30;
         }
     }
 
@@ -125,8 +125,23 @@ namespace arena
             Armor = armor;
             Damage = damage;
         }
+      
+        public override int GetAttack()
+        {
+            int maxValue = 100;
+            int dropPercentage = 20;
 
-        public void Confession()
+            if (_random.Next(0, maxValue) < dropPercentage)
+            {
+                Confession();
+            }
+
+            Console.WriteLine($"{Name}-Нанесенный урон {Damage}");
+
+            return Damage;
+        }
+
+        private void Confession()
         {
             Health += 10;
 
@@ -136,21 +151,6 @@ namespace arena
             }
 
             Damage += 3;
-        }
-
-        public override int Attack()
-        {
-            int maxValue = 100;
-            int dropPercentage = 20;
-
-            if (random.Next(0, maxValue) < dropPercentage)
-            {
-                Confession();
-            }
-
-            Console.WriteLine($"{Name}-Нанесенный урон {Damage}");
-
-            return Damage;
         }
     }
 
@@ -164,14 +164,6 @@ namespace arena
             Damage = damage;
         }
 
-        public void Anger()
-        {
-            int attackIncrease = 2;
-
-            Damage = (Damage / attackIncrease);
-            Health += 10;
-        }
-
         public override void TakeDamage(int damage)
         {
             int damageReduction = 2;
@@ -183,12 +175,12 @@ namespace arena
             Console.WriteLine($"{Name}-Получаю урона {amountDamage}");
         }
 
-        public override int Attack()
+        public override int GetAttack()
         {
             int maxValue = 100;
             int dropPercentage = 20;
 
-            if (random.Next(0, maxValue) < dropPercentage)
+            if (_random.Next(0, maxValue) < dropPercentage)
             {
                 Anger();
             }
@@ -196,6 +188,14 @@ namespace arena
             Console.WriteLine($"{Name}-Нанесенный урон {Damage}");
 
             return Damage;
+        }
+      
+        private void Anger()
+        {
+            int attackIncrease = 2;
+
+            Damage = (Damage / attackIncrease);
+            Health += 10;
         }
     }
 
@@ -209,19 +209,12 @@ namespace arena
             Damage = damage;
         }
 
-        public void Decay()
-        {
-            int increaseLife = 2;
-
-            Health = (Health * increaseLife);
-        }
-
-        public override int Attack()
+        public override int GetAttack()
         {
             int maxValue = 100;
             int dropPercentage = 20;
 
-            if (random.Next(0, maxValue) < dropPercentage)
+            if (_random.Next(0, maxValue) < dropPercentage)
             {
                 Decay();
             }
@@ -229,6 +222,13 @@ namespace arena
             Console.WriteLine($"{Name}-Нанесенный урон {Damage}");
 
             return Damage;
+        }
+
+        private void Decay()
+        {
+            int increaseLife = 2;
+
+            Health = (Health * increaseLife);
         }
     }
 
@@ -242,18 +242,12 @@ namespace arena
             Damage = damage;
         }
 
-        public void Shout()
-        {
-            Armor += 12;
-            Damage += 7;
-        }
-
-        public override int Attack()
+        public override int GetAttack()
         {
             int maxValue = 100;
             int dropPercentage = 20;
 
-            if (random.Next(0, maxValue) < dropPercentage)
+            if (_random.Next(0, maxValue) < dropPercentage)
             {
                 Shout();
             }
@@ -262,30 +256,38 @@ namespace arena
 
             return Damage;
         }
+
+        private void Shout()
+        {
+            Armor += 12;
+            Damage += 7;
+        }
     }
 
     class Arena
     {
-        private Hero[] _heros;
+        private List<Hero> _heros;
 
-        private int _indexFirstHero;
-        private int _indexSecondHero;
+        private Hero _firstHero;
+        private Hero _secondHero;
 
         private bool _isFightersReady;
 
-        public void PlayerChoice()
+        public void ChoiceHeroes()
         {
-            _heros = new Hero[] { new Mage("Mage",60,20,35),
-                                  new Warrior("Warrior",120,35,20) ,
-                                  new Undead("Undead",100,25,19),
-                                  new Zombie("Zombie",75,15,14),
-                                  new Barbarian("Barbarian",110,40,16)};
+            _heros = new List<Hero> { new Mage("Mage",60,20,35),
+                                      new Warrior("Warrior",120,35,20) ,
+                                      new Undead("Undead",100,25,19),
+                                      new Zombie("Zombie",75,15,14),
+                                      new Barbarian("Barbarian",110,40,16)};
 
             ShowHeroes();
 
-            _indexFirstHero = СheckСhoiceHero("Ведите номер  первого героя ");
+            _firstHero = GetHeroIndex("Ведите номер  первого героя ");
 
-            _indexSecondHero = СheckСhoiceHero("Ведите номер  первого героя ");
+            ShowHeroes();
+
+            _secondHero = GetHeroIndex("Ведите номер  первого героя ");
 
             _isFightersReady = true;
         }
@@ -294,36 +296,23 @@ namespace arena
         {
             if (_isFightersReady == true)
             {
-                bool isEndFight = false;
-
-                Hero firstHero = _heros[_indexFirstHero];
-                Hero secondHero = _heros[_indexSecondHero];
-
-                while (isEndFight == false)
+                while (_firstHero.Health > 0 && _secondHero.Health > 0)
                 {
-                    if (firstHero.Health > 0 && secondHero.Health > 0)
-                    {
-                        firstHero.TakeDamage(secondHero.Attack());
+                    _firstHero.TakeDamage(_secondHero.GetAttack());
 
-                        secondHero.TakeDamage(firstHero.Attack());
-                    }
-                    else if (firstHero.Health <= 0 && secondHero.Health <= 0)
+                    _secondHero.TakeDamage(_firstHero.GetAttack());
+
+                    if (_firstHero.Health <= 0 && _secondHero.Health <= 0)
                     {
                         ShowMessage("Оба бойца умерло \n", ConsoleColor.Red);
-
-                        isEndFight = true;
                     }
-                    else if (secondHero.Health <= 0)
+                    else if (_secondHero.Health <= 0)
                     {
-                        ShowMessage($"{firstHero.Name} победил", ConsoleColor.Green);
-
-                        isEndFight = true;
+                        ShowMessage($"{_firstHero.Name} победил", ConsoleColor.Green);
                     }
-                    else if (firstHero.Health <= 0)
+                    else if (_firstHero.Health <= 0)
                     {
-                        ShowMessage($"{firstHero.Name} победил", ConsoleColor.Green);
-
-                        isEndFight = true;
+                        ShowMessage($"{_firstHero.Name} победил", ConsoleColor.Green);
                     }
                 }
             }
@@ -339,14 +328,16 @@ namespace arena
         {
             ShowMessage("||||||||||||| Список героев |||||||||||||\n\n", ConsoleColor.Yellow);
 
-            for (int i = 0; i < _heros.Length; i++)
+            for (int i = 0; i < _heros.Count; i++)
             {
                 ShowMessage($"{i}){_heros[i].Name}", ConsoleColor.Red);
             }
         }
 
-        private int СheckСhoiceHero(string text)
+        private Hero GetHeroIndex(string text)
         {
+            Hero hero = null;
+
             string inputUser;
 
             int meaning = 0;
@@ -360,8 +351,12 @@ namespace arena
 
                 if (Int32.TryParse(inputUser, out meaning))
                 {
-                    if (meaning <= _heros.Length)
+                    if (meaning <= _heros.Count && meaning >= 0)
                     {
+                        hero = _heros[meaning];
+
+                        _heros.RemoveAt(meaning);
+
                         isCorrect = true;
                     }
                     else
@@ -375,7 +370,7 @@ namespace arena
                 }
             }
 
-            return meaning;
+            return hero;
         }
 
         private void ShowMessage(string message, ConsoleColor color)
