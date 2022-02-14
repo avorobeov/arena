@@ -145,9 +145,11 @@ namespace arena
 
         protected override void UseUniqueAbility()
         {
+            int minimumAmountArmor = 1;
+
             Health += 10;
 
-            if (Armor >= 1)
+            if (Armor >= minimumAmountArmor)
             {
                 Armor -= 4;
             }
